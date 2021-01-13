@@ -1,0 +1,13 @@
+steps:
+# Build the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '--target', 'production', '-t', 'gcr.io/$PROJECT_ID/helloworld', '.']
+# Push the container image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/$PROJECT_ID/helloworld']
+# Deploy container image to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args: ['run', 'deploy', 'helloworld', '--image', 'gcr.io/$PROJECT_ID/helloworld', '--allow-unauthenticated', '--region', 'us-central1', '--platform', 'managed']
+images:
+- gcr.io/$PROJECT_ID/helloworld
